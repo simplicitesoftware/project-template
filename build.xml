@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE project>
+
+<project name="simplicite-project" basedir=".">
+
+	<!--
+	============================================================================================
+	== Generic tasks
+	============================================================================================
+	-->
+
+	<target name="service">
+		<input message="Service URL" addproperty="service.url" defaultvalue="http://localhost:8080/io"/>
+		<echo level="info" message="Service URL: [${service.url}]"/>
+		<input message="Service user" addproperty="service.user" defaultvalue="designer"/>
+		<echo level="info" message="Service user: [${service.user}]"/>
+		<input message="Service password" addproperty="service.password" defaultvalue="designer"/>
+
+		<echo level="info" message="Service: [${service}]"/>
+
+		<condition property="input.file.arg" value="--form file=@${input.file}" else=""><isset property="input.file"/></condition>
+		<echo level="info" message="Input file: [${input.file.arg}]"/>
+		<condition property="output.file.arg" value="-o ${output.file}" else=""><isset property="output.file"/></condition>
+		<echo level="info" message="Output file: [${output.file.arg}]"/>
+
+		<condition property="log.arg" value="${log}" else="true"><isset property="log"/></condition>
+		<echo level="info" message="Log: [${log.arg}]"/>
+		<condition property="output.arg" value="${output}" else="plain"><isset property="output"/></condition>
+		<echo level="info" message="Output: [${output.arg}]"/>
+
+		<condition property="param1.arg" value="--form ${param1}" else=""><isset property="param1"/></condition>
+		<echo level="info" message="Param1: [${param1.arg}]"/>
+		<condition property="param2.arg" value="--form ${param2}" else=""><isset property="param2"/></condition>
+		<echo level="info" message="Param2: [${param2.arg}]"/>
+		<condition property="param3.arg" value="--form ${param3}" else=""><isset property="param3"/></condition>
+		<echo level="info" message="Param3: [${param3.arg}]"/>
+		<condition property="param4.arg" value="--form ${param4}" else=""><isset property="param4"/></condition>
+		<echo level="info" message="Param4: [${param4.arg}]"/>
+
+		<exec executable="curl" failonerror="true">
+			<arg value="-s"/>
+			<arg value="-b"/><arg value=".cookies"/>
+			<arg value="-c"/><arg value=".cookies"/>
+			<arg value="-u"/><arg value="${service.user}:${service.password}"/>
+			<arg value="--form"/><arg value="service=${service}"/>
+			<arg value="--form"/><arg value="log=${log.arg}"/>
+			<arg value="--form"/><arg value="output=${output.arg}"/>
+			<arg line="${input.file.arg} ${output.file.arg} ${param1.arg} ${param2.arg} ${param3.arg} ${param4.arg}"/>
+			<arg value="${service.url}"/>
+		</exec>
+	</target>
+
+	<target name="clearcache" description="Clear cache service">
+		<antcall target="service"><param name="service" value="clearcache"/></antcall>
+	</target>
+
+	<target name="sqlscript" description="SQL script service">
+		<input message="SQL script file name" addproperty="file"/>
+		<fail message="File ${file} does not exist">
+			<condition><not><resourceexists><file file="${file}"/></resourceexists></not></condition>
+		</fail>
+		<antcall target="service">
+			<param name="service" value="sqlscript"/>
+			<param name="input.file" value="${file}"/>
+		</antcall>
+	</target>
+
+	<target name="adpimport" description="Adapter import service">
+		<input message="Input file name" addproperty="file"/>
+		<fail message="File ${file} does not exist">
+			<condition><not><resourceexists><file file="${file}"/></resourceexists></not></condition>
+		</fail>
+		<input message="Adapter name" addproperty="adapter"/>
+		<antcall target="service">
+			<param name="service" value="adpimport"/>
+			<param name="input.file" value="${file}"/>
+			<param name="param1" value="adapter=${adapter}"/>
+		</antcall>
+	</target>
+
+	<target name="objimport">
+		<input message="Input file name" addproperty="file"/>
+		<fail message="File ${file} does not exist">
+			<condition><not><resourceexists><file file="${file}"/></resourceexists></not></condition>
+		</fail>
+		<antcall target="service">
+			<param name="service" value="${service}"/>
+			<param name="input.file" value="${file}"/>
+		</antcall>
+	</target>
+
+	<target name="xmlimport" description="XML object import service">
+		<antcall target="objimport"><param name="service" value="xmlimport"/></antcall>
+	</target>
+
+	<target name="zipimport" description="ZIP object import service">
+		<antcall target="objimport"><param name="service" value="zipimport"/></antcall>
+	</target>
+
+	<target name="csvimport" description="CSV object import service">
+		<antcall target="objimport"><param name="service" value="csvimport"/></antcall>
+	</target>
+
+	<target name="moduleimport" description="Module import service">
+		<input message="Input file name" addproperty="file"/>
+		<fail message="File ${file} does not exist">
+			<condition><not><resourceexists><file file="${file}"/></resourceexists></not></condition>
+		</fail>
+		<condition property="zip" value="true" else="false"><matches pattern="\.zip$" string="${file}"/></condition>
+		<input message="Module name" addproperty="module"/>
+		<input message="Module version" addproperty="version"/>
+		<antcall target="service">
+			<param name="service" value="moduleimport"/>
+			<param name="input.file" value="${file}"/>
+			<param name="log" value="false"/>
+			<param name="param1" value="module=${module}"/>
+			<param name="param2" value="version=${version}"/>
+			<param name="param3" value="diff=true"/>
+			<param name="param4" value="zip=${zip}"/>
+		</antcall>
+	</target>
+
+	<target name="fixcrlf" unless="bin">
+		<fixcrlf file="${file}"/>
+	</target>
+
+	<target name="objexport">
+		<input message="Output file name" addproperty="file"/>
+		<input message="Object name" addproperty="object"/>
+		<antcall target="service" >
+			<param name="service" value="${service}"/>
+			<param name="output.file" value="${file}"/>
+			<param name="log" value="false"/>
+			<param name="param1" value="object=${object}"/>
+			<param name="param2" value="excludetimestamps=true"/>
+		</antcall>
+		<condition property="bin"><equals arg1="service" arg2="zipexport"/></condition>
+		<antcall target="fixcrlf"/>
+	</target>
+
+	<target name="xmlexport" description="XML object export service">
+		<antcall target="objexport">
+			<param name="service" value="xmlexport"/>
+			<param name="param3" value="inlinedocs=true"/>
+		</antcall>
+	</target>
+
+	<target name="zipexport" description="ZIP object export service">
+		<antcall target="objexport"><param name="service" value="zipexport"/></antcall>
+	</target>
+
+	<target name="csvexport" description="CSV object export service">
+		<antcall target="objexport"><param name="service" value="csvexport"/></antcall>
+	</target>
+
+	<target name="moduleexport" description="Module export service">
+		<input message="Output file name" addproperty="file"/>
+		<condition property="zip" value="true" else="false"><matches pattern="\.zip$" string="${file}"/></condition>
+		<condition property="inlinedocs" value="false" else="true"><istrue value="${zip}"/></condition>
+		<input message="Module name" addproperty="module"/>
+		<antcall target="service">
+			<param name="service" value="moduleexport"/>
+			<param name="output.file" value="${file}"/>
+			<param name="log" value="false"/>
+			<param name="param1" value="module=${module}"/>
+			<param name="param2" value="excludetimestamps=true"/>
+			<param name="param3" value="inlinedocs=${inlinedocs}"/>
+			<param name="param4" value="zip=${zip}"/>
+		</antcall>
+		<condition property="bin"><istrue value="${zip}"/></condition>
+		<antcall target="fixcrlf"/>
+	</target>
+
+	<target name="purgelogs" description="">
+		<antcall target="service"><param name="service" value="purgelogs"/></antcall>
+	</target>
+
+	<target name="purgejobs" description="">
+		<antcall target="service"><param name="service" value="purgejobs"/></antcall>
+	</target>
+
+	<target name="purgesupervisions" description="">
+		<antcall target="service"><param name="service" value="purgesupervisions"/></antcall>
+	</target>
+
+	<target name="purgerecyclebin" description="">
+		<antcall target="service"><param name="service" value="purgerecyclebin"/></antcall>
+	</target>
+
+	<target name="purgeexports" description="">
+		<antcall target="service"><param name="service" value="purgeexports"/></antcall>
+	</target>
+
+	<target name="purgetempfiles" description="">
+		<antcall target="service"><param name="service" value="purgetempfiles"/></antcall>
+	</target>
+
+	<target name="purgeall" description="">
+		<antcall target="purgelogs"/>
+		<antcall target="purgejobs"/>
+		<antcall target="purgesupervisions"/>
+		<antcall target="purgerecyclebin"/>
+		<antcall target="purgeexports"/>
+		<antcall target="purgetempfiles"/>
+	</target>
+
+	<target name="buildindex">
+		<antcall target="service"><param name="service" value="buildindex"/></antcall>
+	</target>
+
+	<!--
+	============================================================================================
+	== Projects tasks
+	============================================================================================
+	-->
+
+	<!-- Example
+	<property name="project.service.url" value="http://myinstancenurl"/>
+	<property name="project.service.user" value="myusername"/>
+	<property name="project.service.password" value="mypassword"/>
+
+	<target name="exportmodules" description="Export project modules">
+		<antcall target="moduleexport">
+			<param name="service.url" value="${project.service.url}"/>
+			<param name="service.user" value="${project.service.user}"/>
+			<param name="service.password" value="${project.service.password}"/>
+			<param name="file" value="modules/MyModule.xml"/>
+			<param name="module" value="MyModule"/>
+		</antcall>
+	</target>
+	-->
+
+</project>
