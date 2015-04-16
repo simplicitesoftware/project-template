@@ -43,8 +43,8 @@
 	============================================================================================
 	-->
 
-       <condition property="curl" value="${basedir}/tools/curl.exe"><os family="windows"/></condition>
-       <condition property="curl" value="/usr/bin/curl"><os family="unix"/></condition>
+	<condition property="curl" value="${basedir}/tools/curl.exe"><os family="windows"/></condition>
+	<condition property="curl" value="curl"><or><os family="unix"/><<os family="mac"/></or></condition>
 
 	<target name="service">
 		<echo level="info" message="Service URL: [${service.url}]"/>
