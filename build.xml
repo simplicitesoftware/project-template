@@ -1,21 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE project>
 
-<project name="simplicite-project" basedir=".">
+<project name="myproject" basedir=".">
 
 	<!--
 	============================================================================================
-	== Generic tasks
+	== Settings
+	============================================================================================
+	-->
+
+	<property name="service.url" value="http://myurl/io"/>
+	<property name="service.user" value="myuser"/>
+	<property name="service.password" value="mypassword"/>
+
+	<!--
+	============================================================================================
+	== Projects tasks
+	============================================================================================
+	-->
+
+	<target name="exportmodules" description="Export project modules">
+		<!-- Example 1: simple XML export
+		<antcall target="moduleexport">
+			<param name="module" value="MyModule"/>
+			<param name="file" value="modules/MyModule.xml"/>
+		</antcall>
+		-->
+		<!-- Example 2: unzipped ZIP export
+		<antcall target="moduleexport">
+			<param name="module" value="MyModule"/>
+			<param name="file" value="modules/MyModule.zip"/>
+		</antcall>
+		<delete dir="modules/MyModule"/>
+		<unzip src="modules/MyModule.zip" dest="modules/MyModule"/>
+		<delete file="modules/MyModule.zip"/>
+		-->
+	</target>
+
+	<!--
+	============================================================================================
+	== Generic tasks - do no modify unless you know what you do ;-)
 	============================================================================================
 	-->
 
 	<target name="service">
-		<input message="Service URL" addproperty="service.url" defaultvalue="http://localhost:8080/io"/>
 		<echo level="info" message="Service URL: [${service.url}]"/>
-		<input message="Service user" addproperty="service.user" defaultvalue="designer"/>
 		<echo level="info" message="Service user: [${service.user}]"/>
-		<input message="Service password" addproperty="service.password" defaultvalue="designer"/>
-
 		<echo level="info" message="Service: [${service}]"/>
 
 		<condition property="input.file.arg" value="--form file=@${input.file}" else=""><isset property="input.file"/></condition>
@@ -207,27 +237,5 @@
 	<target name="buildindex">
 		<antcall target="service"><param name="service" value="buildindex"/></antcall>
 	</target>
-
-	<!--
-	============================================================================================
-	== Projects tasks
-	============================================================================================
-	-->
-
-	<!-- Example
-	<property name="project.service.url" value="http://myinstancenurl"/>
-	<property name="project.service.user" value="myusername"/>
-	<property name="project.service.password" value="mypassword"/>
-
-	<target name="exportmodules" description="Export project modules">
-		<antcall target="moduleexport">
-			<param name="service.url" value="${project.service.url}"/>
-			<param name="service.user" value="${project.service.user}"/>
-			<param name="service.password" value="${project.service.password}"/>
-			<param name="file" value="modules/MyModule.xml"/>
-			<param name="module" value="MyModule"/>
-		</antcall>
-	</target>
-	-->
 
 </project>
