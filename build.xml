@@ -43,6 +43,9 @@
 	============================================================================================
 	-->
 
+       <condition property="curl" value="${basedir}/tools/curl.exe"><os family="windows"/></condition>
+       <condition property="curl" value="/usr/bin/curl"><os family="unix"/></condition>
+
 	<target name="service">
 		<echo level="info" message="Service URL: [${service.url}]"/>
 		<echo level="info" message="Service user: [${service.user}]"/>
@@ -67,7 +70,7 @@
 		<condition property="param4.arg" value="--form ${param4}" else=""><isset property="param4"/></condition>
 		<echo level="info" message="Param4: [${param4.arg}]"/>
 
-		<exec executable="curl" failonerror="true">
+		<exec executable="${curl}" failonerror="true">
 			<arg value="-s"/>
 			<arg value="-b"/><arg value=".cookies"/>
 			<arg value="-c"/><arg value=".cookies"/>
