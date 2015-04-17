@@ -9,7 +9,7 @@
 	============================================================================================
 	-->
 
-	<property name="service.url" value="@@url@@/io"/>
+	<property name="service.url" value="http://@@host@@/io"/>
 	<property name="service.user" value="@@user@@"/>
 	<property name="service.password" value="@@password@@"/>
 
