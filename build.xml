@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE project>
 
-<project name="simplicite" basedir="." default="info">
+<project name="@@project@@" basedir="." default="info">
 
 	<!--
 	============================================================================================
@@ -9,9 +9,9 @@
 	============================================================================================
 	-->
 
-	<property name="service.url" value="http://localhost:8080/io"/>
-	<property name="service.user" value="designer"/>
-	<property name="service.password" value="designer"/>
+	<property name="service.url" value="@@url@@/io"/>
+	<property name="service.user" value="@@user@@"/>
+	<property name="service.password" value="@@password@@"/>
 
 	<!--
 	============================================================================================
