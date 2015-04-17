@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE project>
 
-<project name="myproject" basedir=".">
+<project name="myproject" basedir="." default="info">
 
 	<!--
 	============================================================================================
@@ -43,14 +43,17 @@
 	============================================================================================
 	-->
 
-	<condition property="curl" value="${basedir}/tools/curl.exe"><os family="windows"/></condition>
-	<condition property="curl" value="curl"><or><os family="unix"/><<os family="mac"/></or></condition>
+	<condition property="curl" value="curl.exe"><os family="windows"/></condition>
+	<condition property="curl" value="curl"><or><os family="unix"/><os family="mac"/></or></condition>
 
-	<target name="service">
+	<target name="info" description="Information">
 		<echo level="info" message="Service URL: [${service.url}]"/>
 		<echo level="info" message="Service user: [${service.user}]"/>
 		<echo level="info" message="Service: [${service}]"/>
+		<echo level="info" message="cURL executable: [${curl}]"/>
+	</target>
 
+	<target name="service" depends="info">
 		<condition property="input.file.arg" value="--form file=@${input.file}" else=""><isset property="input.file"/></condition>
 		<echo level="info" message="Input file: [${input.file.arg}]"/>
 		<condition property="output.file.arg" value="-o ${output.file}" else=""><isset property="output.file"/></condition>
