@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE project>
 
-<project name="myproject" basedir="." default="info">
+<project name="simplicite" basedir="." default="info">
 
 	<!--
 	============================================================================================
@@ -9,9 +9,9 @@
 	============================================================================================
 	-->
 
-	<property name="service.url" value="http://myurl/io"/>
-	<property name="service.user" value="myuser"/>
-	<property name="service.password" value="mypassword"/>
+	<property name="service.url" value="http://localhost:8080/io"/>
+	<property name="service.user" value="designer"/>
+	<property name="service.password" value="designer"/>
 
 	<!--
 	============================================================================================
@@ -49,11 +49,10 @@
 	<target name="info" description="Information">
 		<echo level="info" message="Service URL: [${service.url}]"/>
 		<echo level="info" message="Service user: [${service.user}]"/>
-		<echo level="info" message="Service: [${service}]"/>
-		<echo level="info" message="cURL executable: [${curl}]"/>
 	</target>
 
 	<target name="service" depends="info">
+		<echo level="info" message="Service: [${service}]"/>
 		<condition property="input.file.arg" value="--form file=@${input.file}" else=""><isset property="input.file"/></condition>
 		<echo level="info" message="Input file: [${input.file.arg}]"/>
 		<condition property="output.file.arg" value="-o ${output.file}" else=""><isset property="output.file"/></condition>
