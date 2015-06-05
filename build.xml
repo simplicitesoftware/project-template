@@ -73,8 +73,8 @@
 		<echo level="info" message="Param4: [${param4.arg}]"/>
 
 		<exec executable="${curl}" failonerror="true">
-			<arg value="-k"/>
 			<arg value="-s"/>
+			<arg value="-k"/>
 			<arg value="-b"/><arg value=".cookies"/>
 			<arg value="-c"/><arg value=".cookies"/>
 			<arg value="-u"/><arg value="${service.user}:${service.password}"/>
