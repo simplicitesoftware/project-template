@@ -19,6 +19,11 @@
 	============================================================================================
 	-->
 
+	<target name="info">
+		<echo message="Service URL = ${service.url}"/>
+		<echo message="Service user = ${service.user}"/>
+	</target>
+
 	<target name="exportmodules" description="Export project modules">
 		<!-- Example 1: simple XML export
 		<antcall target="moduleexport">
@@ -122,6 +127,7 @@
 		<antcall target="service">
 			<param name="service" value="${service}"/>
 			<param name="input.file" value="${file}"/>
+			<param name="param1" value="object=${object}"/>
 		</antcall>
 	</target>
 
