@@ -19,6 +19,9 @@
 	============================================================================================
 	-->
 
+	<target name="info" description="Information">
+	</target>
+
 	<target name="exportmodules" description="Export project modules">
 		<!-- Example 1: simple XML export
 		<antcall target="moduleexport">
@@ -46,17 +49,15 @@
 	<condition property="curl" value="curl.exe"><os family="windows"/></condition>
 	<condition property="curl" value="curl"><or><os family="unix"/><os family="mac"/></or></condition>
 
-	<target name="info" description="Information">
-		<echo level="info" message="Service URL: [${service.url}]"/>
-		<echo level="info" message="Service user: [${service.user}]"/>
-	</target>
-
 	<target name="clean" description="Clean">
 		<delete file=".cookies"/>
 	</target>
 
 	<target name="service" depends="info">
 		<echo level="info" message="Service: [${service}]"/>
+		<echo level="info" message="Service URL: [${service.url}]"/>
+		<echo level="info" message="Service user: [${service.user}]"/>
+
 		<condition property="input.file.arg" value="--form file=@${input.file}" else=""><isset property="input.file"/></condition>
 		<echo level="info" message="Input file: [${input.file.arg}]"/>
 		<condition property="output.file.arg" value="-o ${output.file}" else=""><isset property="output.file"/></condition>
