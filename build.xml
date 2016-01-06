@@ -10,6 +10,7 @@
 	-->
 
 	<property name="service.url" value="http://@@host@@/io"/>
+	<property name="service.module" value="MyModule"/>
 	<property name="service.user" value="@@user@@"/>
 	<property name="service.password" value="@@password@@"/>
 
@@ -20,24 +21,46 @@
 	-->
 
 	<target name="info" description="Information">
+		<echo level="info" message="Service module: [${service.module}]"/>
 	</target>
 
-	<target name="exportmodules" description="Export project modules">
+	<target name="exportapp" description="Export application">
 		<!-- Example 1: simple XML export
 		<antcall target="moduleexport">
-			<param name="module" value="MyModule"/>
-			<param name="file" value="modules/MyModule.xml"/>
+			<param name="module" value="${service.module}"/>
+			<param name="file" value="modules/${service.module}.xml"/>
 		</antcall>
 		-->
 		<!-- Example 2: unzipped ZIP export
 		<antcall target="moduleexport">
-			<param name="module" value="MyModule"/>
-			<param name="file" value="modules/MyModule.zip"/>
+			<param name="module" value="${service.module}"/>
+			<param name="file" value="modules/${service.module}.zip"/>
 		</antcall>
-		<delete dir="modules/MyModule"/>
-		<unzip src="modules/MyModule.zip" dest="modules/MyModule"/>
-		<delete file="modules/MyModule.zip"/>
+		<delete dir="modules/${service.module}"/>
+		<unzip src="modules/${service.module}.zip" dest="modules/${service.module}"/>
+		<delete file="modules/${service.module}.zip"/>
 		-->
+	</target>
+
+	<target name="exportrefdata" description="Export application reference data">
+		<!-- Example: XML export
+		<antcall target="xmlexport">
+			<param name="file" value="data/MyObject.xml"/>
+			<param name="object" value="MyObject"/>
+		</antcall>
+		-->
+	</target>
+
+	<target name="importapp">
+		<delete file="modules/${service.module}.zip"/>
+		<zip destfile="modules/${service.module}.zip" basedir="modules/${service.module}"/>
+		<antcall target="moduleimport">
+			<param name="file" value="modules/${service.module}.zip"/>
+			<param name="module" value="${service.module}"/>
+			<param name="version" value="0"/>
+		</antcall>
+		<delete file="modules/${service.module}.zip"/>
+		<antcall target="clearcache"/>
 	</target>
 
 	<!--
@@ -54,9 +77,9 @@
 	</target>
 
 	<target name="service" depends="info">
-		<echo level="info" message="Service: [${service}]"/>
 		<echo level="info" message="Service URL: [${service.url}]"/>
 		<echo level="info" message="Service user: [${service.user}]"/>
+		<echo level="info" message="Service: [${service}]"/>
 
 		<condition property="input.file.arg" value="--form file=@${input.file}" else=""><isset property="input.file"/></condition>
 		<echo level="info" message="Input file: [${input.file.arg}]"/>
