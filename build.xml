@@ -9,7 +9,9 @@
 	============================================================================================
 	-->
 
-	<property name="service.url" value="http://@@host@@/io"/>
+	<property name="url.dev" value="http://@@host@@/"/>
+	<property name="url.prod" value="http://xxx"/>
+	
 	<property name="service.module" value="MyModule"/>
 	<property name="service.user" value="@@user@@"/>
 	<property name="service.password" value="@@password@@"/>
@@ -24,7 +26,8 @@
 		<echo level="info" message="Service module: [${service.module}]"/>
 	</target>
 
-	<target name="exportapp" description="Export application">
+	<target name="exportappfromdev" description="Export application">
+		<property name="service.url" value="${url.dev}/io"/>
 		<!-- Example 1: simple XML export
 		<antcall target="moduleexport">
 			<param name="module" value="${service.module}"/>
@@ -42,7 +45,8 @@
 		-->
 	</target>
 
-	<target name="exportrefdata" description="Export application reference data">
+	<target name="exportrefdatafromdev" description="Export application reference data">
+		<property name="service.url" value="${url.dev}/io"/>
 		<!-- Example: XML export
 		<antcall target="xmlexport">
 			<param name="file" value="data/MyObject.xml"/>
@@ -51,7 +55,7 @@
 		-->
 	</target>
 
-	<target name="importapp">
+	<target name="importapptoinstance">
 		<delete file="modules/${service.module}.zip"/>
 		<zip destfile="modules/${service.module}.zip" basedir="modules/${service.module}"/>
 		<antcall target="moduleimport">
@@ -61,6 +65,11 @@
 		</antcall>
 		<delete file="modules/${service.module}.zip"/>
 		<antcall target="clearcache"/>
+	</target>
+
+	<target name="importapptoprod">
+		<input message="Production URL" addproperty="service.url" defaultvalue="${url.prod}/io"/>
+		<antcall target="importapptoinstance"/>
 	</target>
 
 	<!--
