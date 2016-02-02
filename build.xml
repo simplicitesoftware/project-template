@@ -41,6 +41,10 @@
 		</antcall>
 		<delete dir="modules/${service.module}"/>
 		<unzip src="modules/${service.module}.zip" dest="modules/${service.module}"/>
+		<move todir="modules/${service.module}">
+			<fileset dir="modules/${service.module}"><include name="${service.module}_*.xml"/></fileset>
+			<mapper type="glob" from="${service.module}_*.xml" to="${service.module}.xml"/>
+		</move>
 		<delete file="modules/${service.module}.zip"/>
 		-->
 	</target>
