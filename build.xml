@@ -103,6 +103,7 @@
 		<exec executable="${curl}" failonerror="true">
 			<arg value="-s"/>
 			<arg value="-k"/>
+			<arg value="-L"/>
 			<arg value="-b"/><arg value=".cookies"/>
 			<arg value="-c"/><arg value=".cookies"/>
 			<arg value="-u"/><arg value="${service.user}:${service.password}"/>
