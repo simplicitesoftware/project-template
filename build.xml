@@ -25,7 +25,8 @@
 	-->
 
 	<target name="info" description="Information">
-		<echo level="info" message="Service module: [${service.module}]"/>
+		<echo level="info" message="Service module: ${service.module}"/>
+		<echo level="info" message="Git base directory: ${git.basedir}"/>
 	</target>
 
 	<target name="exportappfromdev" description="Export application">
