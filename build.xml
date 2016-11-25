@@ -11,10 +11,12 @@
 
 	<property name="url.dev" value="http://@@host@@/"/>
 	<property name="url.prod" value="http://xxx"/>
-	
+
 	<property name="service.module" value="MyModule"/>
 	<property name="service.user" value="@@user@@"/>
 	<property name="service.password" value="@@password@@"/>
+
+	<property name="git.basedir" value="../${ant.project.name}-modules"/>
 
 	<!--
 	============================================================================================
@@ -294,6 +296,39 @@
 
 	<target name="buildindex">
 		<antcall target="service"><param name="service" value="buildindex"/></antcall>
+	</target>
+
+	<condition property="git" value="git.exe"><os family="windows"/></condition>
+	<condition property="git" value="git"><or><os family="unix"/><os family="mac"/></or></condition>
+
+	<target name="git.clone">
+		<input message="URL" addproperty="url"/>
+		<mkdir dir="${git.basedir}"/>
+		<exec dir="${git.basedir}" executable="${git}">
+			<arg value="clone"/>
+			<arg value="${url}"/>
+		</exec>
+	</target>
+
+	<target name="git.pull">
+		<input message="Directory" addproperty="dir"/>
+		<exec dir="${git.basedir}/${dir}" executable="${git}">
+			<arg value="pull"/>
+		</exec>
+	</target>
+
+	<target name="git.fetch">
+		<input message="Directory" addproperty="dir"/>
+		<exec dir="${git.basedir}/${dir}" executable="${git}">
+			<arg value="fetch"/>
+		</exec>
+	</target>
+
+	<target name="git.push">
+		<input message="Directory" addproperty="dir"/>
+		<exec dir="${git.basedir}/${dir}" executable="${git}">
+			<arg value="push"/>
+		</exec>
 	</target>
 
 </project>
