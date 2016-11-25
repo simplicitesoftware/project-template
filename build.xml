@@ -251,6 +251,14 @@
 		<antcall target="fixcrlf"/>
 	</target>
 
+	<target name="modulecommit" description="Commit module service">
+		<input message="Module name" addproperty="module"/>
+		<antcall target="service">
+			<param name="service" value="modulecommit"/>
+			<param name="param1" value="module=${module}"/>
+		</antcall>
+	</target>
+
 	<target name="purgelogs" description="">
 		<antcall target="service"><param name="service" value="purgelogs"/></antcall>
 	</target>
