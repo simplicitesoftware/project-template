@@ -9,12 +9,13 @@
 	============================================================================================
 	-->
 
-	<property name="url.dev" value="http://@@host@@/"/>
-	<property name="url.prod" value="http://xxx"/>
-
-	<property name="service.module" value="MyModule"/>
+	<property name="service.url.dev" value="http://@@host@@"/>
 	<property name="service.user" value="@@user@@"/>
 	<property name="service.password" value="@@password@@"/>
+
+	<property name="service.url.prod" value="http://xxx"/>
+	<property name="service.user.prod" value="yyy"/>
+	<property name="service.password.prod" value="zzz"/>
 
 	<property name="git.basedir" value="../${ant.project.name}-modules"/>
 
@@ -25,35 +26,38 @@
 	-->
 
 	<target name="info" description="Information">
-		<echo level="info" message="Service module: ${service.module}"/>
 		<echo level="info" message="Git base directory: ${git.basedir}"/>
 	</target>
 
 	<target name="exportappfromdev" description="Export application">
-		<property name="service.url" value="${url.dev}/io"/>
+		<property name="service.url" value="${service.url.dev}"/>
+		<property name="service.user" value="${service.url.user.dev}"/>
+		<property name="service.password" value="${service.url.password}"/>
 		<!-- Example 1: simple XML export
 		<antcall target="moduleexport">
-			<param name="module" value="${service.module}"/>
-			<param name="file" value="modules/${service.module}.xml"/>
+			<param name="module" value="MyModule"/>
+			<param name="file" value="modules/MyModule.xml"/>
 		</antcall>
 		-->
 		<!-- Example 2: unzipped ZIP export
 		<antcall target="moduleexport">
-			<param name="module" value="${service.module}"/>
-			<param name="file" value="modules/${service.module}.zip"/>
+			<param name="module" value="MyModule"/>
+			<param name="file" value="modules/MyModule.zip"/>
 		</antcall>
-		<delete dir="modules/${service.module}"/>
-		<unzip src="modules/${service.module}.zip" dest="modules/${service.module}"/>
-		<move todir="modules/${service.module}">
-			<fileset dir="modules/${service.module}"><include name="${service.module}_*.xml"/></fileset>
-			<mapper type="glob" from="${service.module}_*.xml" to="${service.module}.xml"/>
+		<delete dir="modules/MyModule"/>
+		<unzip src="modules/MyModule.zip" dest="modules/MyModule"/>
+		<move todir="modules/MyModule">
+			<fileset dir="modules/MyModule"><include name="MyModule_*.xml"/></fileset>
+			<mapper type="glob" from="MyModule_*.xml" to="MyModule.xml"/>
 		</move>
-		<delete file="modules/${service.module}.zip"/>
+		<delete file="modules/MyModule.zip"/>
 		-->
 	</target>
 
 	<target name="exportrefdatafromdev" description="Export application reference data">
-		<property name="service.url" value="${url.dev}/io"/>
+		<property name="service.url" value="${service.url.dev}"/>
+		<property name="service.user" value="${service.url.user.dev}"/>
+		<property name="service.password" value="${service.url.password}"/>
 		<!-- Example: XML export
 		<antcall target="xmlexport">
 			<param name="file" value="data/MyObject.xml"/>
@@ -63,19 +67,23 @@
 	</target>
 
 	<target name="importapptoinstance">
-		<delete file="modules/${service.module}.zip"/>
-		<zip destfile="modules/${service.module}.zip" basedir="modules/${service.module}"/>
+		<!-- Example: ZIP import
+		<delete file="modules/MyModule.zip"/>
+		<zip destfile="modules/MyModule.zip" basedir="modules/MyModule"/>
 		<antcall target="moduleimport">
-			<param name="file" value="modules/${service.module}.zip"/>
-			<param name="module" value="${service.module}"/>
+			<param name="file" value="modules/MyModule.zip"/>
+			<param name="module" value="MyModule"/>
 			<param name="version" value="0"/>
 		</antcall>
-		<delete file="modules/${service.module}.zip"/>
+		<delete file="modules/MyModule.zip"/>
 		<antcall target="clearcache"/>
+		-->
 	</target>
 
 	<target name="importapptoprod">
-		<input message="Production URL" addproperty="service.url" defaultvalue="${url.prod}/io"/>
+		<input message="Production URL" addproperty="service.url" defaultvalue="${service.url.prod}"/>
+		<input message="Production user" addproperty="service.user" defaultvalue="${service.user.prod}"/>
+		<input message="Production password" addproperty="service.password" defaultvalue="${service.password.prod}"/>
 		<antcall target="importapptoinstance"/>
 	</target>
 
@@ -93,7 +101,7 @@
 	</target>
 
 	<target name="service" depends="info">
-		<echo level="info" message="Service URL: [${service.url}]"/>
+		<echo level="info" message="Service URL: [${service.url}/io]"/>
 		<echo level="info" message="Service user: [${service.user}]"/>
 		<echo level="info" message="Service: [${service}]"/>
 
@@ -128,7 +136,7 @@
 			<arg value="--form"/><arg value="log=${log.arg}"/>
 			<arg value="--form"/><arg value="output=${output.arg}"/>
 			<arg line="${input.file.arg} ${output.file.arg} ${param1.arg} ${param2.arg} ${param3.arg} ${param4.arg}"/>
-			<arg value="${service.url}"/>
+			<arg value="${service.url}/io"/>
 		</exec>
 	</target>
 
