@@ -9,6 +9,8 @@
 	============================================================================================
 	-->
 
+	<property environment="env"/>
+
 	<property name="service.url.dev" value="http://@@host@@"/>
 	<property name="service.user" value="@@user@@"/>
 	<property name="service.password" value="@@password@@"/>
@@ -95,9 +97,10 @@
 
 	<condition property="curl" value="curl.exe"><os family="windows"/></condition>
 	<condition property="curl" value="curl"><or><os family="unix"/><os family="mac"/></or></condition>
+	<property name="curl.cookies" value="curl-cookies.txt"/>
 
 	<target name="clean" description="Clean">
-		<delete file=".cookies"/>
+		<delete file="${curl.cookies}"/>
 	</target>
 
 	<target name="service" depends="info">
@@ -129,8 +132,8 @@
 			<arg value="-k"/>
 			<arg value="-L"/>
 			<arg value="--http1.1"/>
-			<arg value="-b"/><arg value=".cookies"/>
-			<arg value="-c"/><arg value=".cookies"/>
+			<arg value="-b"/><arg value="${curl.cookies}"/>
+			<arg value="-c"/><arg value="${curl.cookies}"/>
 			<arg value="-u"/><arg value="${service.user}:${service.password}"/>
 			<arg value="--form"/><arg value="service=${service}"/>
 			<arg value="--form"/><arg value="log=${log.arg}"/>
@@ -142,6 +145,7 @@
 
 	<target name="clearcache" description="Clear cache service">
 		<antcall target="service"><param name="service" value="clearcache"/></antcall>
+		<antcall target="clean"/>
 	</target>
 
 	<target name="sqlscript" description="SQL script service">
@@ -256,6 +260,21 @@
 			<param name="param1" value="module=${module}"/>
 			<param name="param2" value="excludetimestamps=true"/>
 			<param name="param3" value="inlinedocs=${inlinedocs}"/>
+			<param name="param4" value="zip=${zip}"/>
+		</antcall>
+		<condition property="bin"><istrue value="${zip}"/></condition>
+		<antcall target="fixcrlf"/>
+	</target>
+
+	<target name="moduleexportdata" description="Module export data service">
+		<input message="Output file name" addproperty="file"/>
+		<condition property="zip" value="true" else="false"><matches pattern="\.zip$" string="${file}"/></condition>
+		<input message="Module name" addproperty="module"/>
+		<antcall target="service">
+			<param name="service" value="moduleexportdata"/>
+			<param name="output.file" value="${file}"/>
+			<param name="log" value="false"/>
+			<param name="param1" value="module=${module}"/>
 			<param name="param4" value="zip=${zip}"/>
 		</antcall>
 		<condition property="bin"><istrue value="${zip}"/></condition>
