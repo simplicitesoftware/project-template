@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE project>
 
-<project name="@@project@@" basedir="." default="info">
+<project name="_your_project_name_" basedir="." default="info">
 
 	<!--
 	============================================================================================
@@ -11,13 +11,13 @@
 
 	<property environment="env"/>
 
-	<property name="service.url.dev" value="http://@@host@@"/>
-	<property name="service.user" value="@@user@@"/>
-	<property name="service.password" value="@@password@@"/>
+	<property name="service.url.dev" value="https://_your_dev_instance_host_"/>
+	<property name="service.user" value="_your_dev_instance_user_"/>
+	<property name="service.password" value="_your_dev_instance_password_"/>
 
-	<property name="service.url.prod" value="http://xxx"/>
-	<property name="service.user.prod" value="yyy"/>
-	<property name="service.password.prod" value="zzz"/>
+	<property name="service.url.prod" value="https://_your_prod_instance_host_"/>
+	<property name="service.user.prod" value="_your_prod_instance_user_"/>
+	<property name="service.password.prod" value="_your_prod_instance_password_"/>
 
 	<property name="git.basedir" value="../${ant.project.name}-modules"/>
 

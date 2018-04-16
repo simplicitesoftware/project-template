@@ -1,6 +1,5 @@
-Project @@project@@
-==================
+Project template
+================
 
-This is the default project package for project **@@project@@**.
-
-_NB: The Apache ANT `build.xml` build file (requires `curl`) provides with tasks to manage a remote Simplicit&eacute;&reg; application._
+This is a project template for the Simplicit&eacute; platform.
+It uses [Apache Ant](https://ant.apache.org/) (which uses the `curl` tool) to call your Simplicit&eacute; instances.
